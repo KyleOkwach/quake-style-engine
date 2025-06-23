@@ -1,2 +1,2 @@
-# QUAKE ENGINE CLONE
-### A quake style engine made using C and SDL3
+# BOOMER SHOOTER GAME ENGINE
+### A boomer shooter engine made using C and SDL3
