@@ -1,0 +1,6 @@
+STRUCTURE.MD
+
+.vscode/
+out/
+
+*.log
