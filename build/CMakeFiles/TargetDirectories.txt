@@ -1,0 +1,2 @@
+C:/Users/kwshi/Documents/projects/software-rendered-3d-engine/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/kwshi/Documents/projects/software-rendered-3d-engine/build/CMakeFiles/ZERO_CHECK.dir
