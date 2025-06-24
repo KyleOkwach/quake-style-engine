@@ -83,5 +83,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
         return SDL_APP_FAILURE;
     }
 
+    SDL_SetTextureScaleMode(state->framebuffer, SDL_SCALEMODE_NEAREST);  // Set the texture scale mode to nearest neighbor
+
     return SDL_APP_CONTINUE;  // Allow app to continue running
 }
