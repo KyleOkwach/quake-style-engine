@@ -46,3 +46,8 @@ void framebuffer_destroy(void) {
     SDL_free(pixel_buffer);
     pixel_buffer = NULL;
 }
+
+void framebuffer_resize(int width, int height) {
+    framebuffer_destroy(); // Free old buffer
+    framebuffer_init(width, height); // Reallocate
+}
