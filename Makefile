@@ -9,12 +9,13 @@ build: out
 	@echo "Building the SDL game..."
 	@gcc ./src/*.c \
 		./src/platform/*.c \
+		./src/engine/*.c \
 		-lSDL3 \
-		-o ./out/sdl_game.exe || (echo "Build failed!"; exit 1)
+		-o ./out/boomer_shooter.exe || (echo "Build failed!"; exit 1)
 
-run: ./out/sdl_game.exe
+run: ./out/boomer_shooter.exe
 	@echo "Running the SDL game..."
-	@./out/sdl_game.exe
+	@./out/boomer_shooter.exe
 
 clean:
-	@rm -rf ./out/sdl_game.exe
+	@rm -rf ./out/boomer_shooter.exe

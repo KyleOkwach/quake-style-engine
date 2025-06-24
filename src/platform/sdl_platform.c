@@ -10,6 +10,9 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     }
 
     if (state->window) {
+        framebuffer_destroy();  // Clean up framebuffer resources
+        SDL_DestroyTexture(state->framebuffer);  // Destroy the framebuffer texture if it exists
+        state->framebuffer = NULL;  // Set the framebuffer to NULL after destruction
         SDL_DestroyRenderer(state->renderer);  // Destroy the renderer if it exists
         state->renderer = NULL;  // Set the renderer to NULL after destruction
         SDL_DestroyWindow(state->window);  // Destroy the window if it exists
@@ -37,25 +40,30 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         }
     }
 
-    SDL_SetRenderDrawColor(state->renderer, 0, 0, 0, 255);  // Set renderer draw color to black
-    SDL_RenderClear(state->renderer);  // Clear the renderer
-
-    // Render your game here
-
-    SDL_RenderPresent(state->renderer);  // Present the rendered frame
+    // Using framebuffer to draw to screen
+    framebuffer_clear(0x1F1F1FFF);
+    framebuffer_putpixel(100, 100, 0xFF0000FF);  // Example pixel drawing
+    framebuffer_present(state);
 
     return SDL_APP_CONTINUE;  // Allow app to continue running
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
-    AppState* state = (AppState*)appstate;  // Cast appstate to AppState pointer
+    AppState *state = (AppState*)appstate;  // Cast appstate to AppState pointer
 
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;  // Handle quit event
     }
 
-    // Handle other events here (e.g., keyboard, mouse, etc.)
+    // Handle other events here (Possibly through an event queue e.g., keyboard, mouse, etc.)
     // ...
 
     return SDL_APP_CONTINUE;  // Continue processing events
+}
+
+void app_update(void *appstate) {
+    AppState *state = (AppState*)appstate;  // Cast appstate to AppState pointer
+    state->current_tick = SDL_GetTicks();  // Get the current tick count in milliseconds
+    state->delta_time = (state->current_tick - state->last_tick) / 1000.0f;  // Calculate delta time in seconds
+    state->last_tick = state->current_tick;  // Update last tick to current tick
 }
