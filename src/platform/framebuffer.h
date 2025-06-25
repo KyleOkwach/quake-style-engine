@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../platform/common.h"
+#include "common.h"
 
 void framebuffer_init(int width, int height);
 void framebuffer_clear(Uint32 color);

@@ -1,4 +1,4 @@
-#include "framebuffer.h"
+#include "../framebuffer.h"
 
 Uint32 *pixel_buffer = NULL;
 static int fb_width = 0, fb_height = 0;
