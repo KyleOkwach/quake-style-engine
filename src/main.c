@@ -2,10 +2,19 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include "config.h"
-#include "platform/common.h"
-#include "platform/time.h"
-#include "platform/framebuffer.h"
-#include "platform/init.h"
+#include "backend/common.h"
+#include "backend/time.h"
+#include "backend/init.h"
+#include "backend/framebuffer.h"
+#include "core/systems/rasterize.h"
+#include "game/game.h"
+
+void app_render(void *appstate) {
+    AppState *state = (AppState *)appstate;
+    framebuffer_clear(0x1F1F1FFF);
+    draw_triangle_filled(100, 100, 200, 100, 150, 200, 0xFF0000FF); // Draw a red triangle
+    framebuffer_present(state);
+}
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     AppState *state = (AppState *)appstate;  // Cast appstate to AppState type
@@ -38,10 +47,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
         }
     }
 
-    // Using framebuffer to draw to screen
-    framebuffer_clear(0x1F1F1FFF);
-
-    framebuffer_present(state);
+    app_render(state);  // Render the application state
+    app_update(state);  // Update the application state based on the current tick
+    app_wait_for_frame(state);  // Wait for the next frame to render
 
     return SDL_APP_CONTINUE;  // Allow app to continue running
 }
@@ -83,7 +91,16 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
         return SDL_APP_FAILURE;
     }
 
-    SDL_SetTextureScaleMode(state->framebuffer, SDL_SCALEMODE_NEAREST);  // Set the texture scale mode to nearest neighbor
+    SDL_SetWindowTitle(state->window, "Boomer Shooter");  // Set window title
+    SDL_SetWindowPosition(state->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);  // Center the window on the screen
+    SDL_Log("Application initialized successfully.");
+
+    if(!game_init) {
+        SDL_Log("Game initialization function not found.");
+        SDL_AppQuit(state, SDL_APP_FAILURE);  // Clean up and quit if game_init is not defined
+        SDL_free(state);  // Free the allocated memory for the app state
+        return SDL_APP_FAILURE;
+    }
 
     return SDL_APP_CONTINUE;  // Allow app to continue running
 }

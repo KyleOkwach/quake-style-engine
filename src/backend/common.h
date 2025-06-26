@@ -13,8 +13,8 @@ typedef struct {
     SDL_Renderer *renderer;
     SDL_Texture *framebuffer;
 
-    Uint64 last_tick;
-    Uint64 current_tick;
+    uint64_t last_tick;
+    uint64_t current_tick;
     float delta_time;
 
     int window_width;

@@ -1,6 +1,6 @@
-#include "primitives.h"
+#include "rasterize.h"
 
-static void swap_ints(int* a, int* b) {
+static void swap_points(int* a, int* b) {
     int temp = *a;
     *a = *b;
     *b = temp;
@@ -8,16 +8,16 @@ static void swap_ints(int* a, int* b) {
 
 static void sort_by_y(int* x0, int* y0, int* x1, int* y1, int* x2, int* y2) {
     if (*y0 > *y1) {
-        swap_ints(y0, y1);
-        swap_ints(x0, x1);
+        swap_points(y0, y1);
+        swap_points(x0, x1);
     }
     if (*y0 > *y2) {
-        swap_ints(y0, y2);
-        swap_ints(x0, x2);
+        swap_points(y0, y2);
+        swap_points(x0, x2);
     }
     if (*y1 > *y2) {
-        swap_ints(y1, y2);
-        swap_ints(x1, x2);
+        swap_points(y1, y2);
+        swap_points(x1, x2);
     }
 }
 
@@ -104,8 +104,8 @@ void draw_rectangle(int x0, int y0, int x1, int y1, uint32_t color) {
 
 // Draw filled rectangle
 void draw_rectangle_filled(int x0, int y0, int x1, int y1, uint32_t color) {
-    if (y0 > y1) swap_ints(&y0, &y1);
-    if (x0 > x1) swap_ints(&x0, &x1);
+    if (y0 > y1) swap_points(&y0, &y1);
+    if (x0 > x1) swap_points(&x0, &x1);
 
     for (int y = y0; y <= y1; y++) {
         draw_hline(x0, x1, y, color);

@@ -7,7 +7,7 @@
 void app_wait_for_frame(void *appstate) {
     AppState *state = (AppState*)appstate;
 
-    Uint64 frame_time = SDL_GetTicks() - state->current_tick;  // Calculate the time since the last frame
+    uint64_t frame_time = SDL_GetTicks() - state->current_tick;  // Calculate the time since the last frame
     if (frame_time < TARGET_FRAME_TIME) {
         SDL_Delay(TARGET_FRAME_TIME - frame_time);  // Delay to maintain the target frame rate
     }

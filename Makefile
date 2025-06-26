@@ -8,9 +8,11 @@ out:
 build: out
 	@echo "Building the SDL game..."
 	@gcc ./src/*.c \
-		./src/platform/*.c \
-		./src/platform/sdl/*.c \
-		./src/engine/renderer/*.c \
+		./src/backend/*.c \
+		./src/backend/sdl/*.c \
+		./src/core/*.c \
+		./src/core/systems/*.c \
+		./src/game/*.c \
 		-lSDL3 \
 		-o ./out/boomer_shooter.exe || (echo "Build failed!"; exit 1)
 
