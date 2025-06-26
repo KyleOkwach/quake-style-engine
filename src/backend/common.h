@@ -3,12 +3,8 @@
 #include <stdint.h>
 #include <SDL3/SDL.h>
 
-#define MAX_TITLE_LENGTH 64
-
 // This struct stores the state of the app.
 typedef struct {
-    char title[MAX_TITLE_LENGTH];
-
     SDL_Window *window;
     SDL_Renderer *renderer;
     SDL_Texture *framebuffer;

@@ -12,7 +12,7 @@
 void app_render(void *appstate) {
     AppState *state = (AppState *)appstate;
     framebuffer_clear(0x1F1F1FFF);
-    draw_triangle_filled(100, 100, 200, 100, 150, 200, 0xFF0000FF); // Draw a red triangle
+    game_update(state);  // Call the game update function to handle game logic and rendering
     framebuffer_present(state);
 }
 
@@ -26,6 +26,8 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     }
 
     if (state->window) {
+        game_quit();  // Call the game quit function to clean up game resources
+        framebuffer_present(state);  // Present the framebuffer before quitting
         framebuffer_destroy();  // Clean up framebuffer resources
         SDL_DestroyTexture(state->framebuffer);  // Destroy the framebuffer texture if it exists
         state->framebuffer = NULL;  // Set the framebuffer to NULL after destruction
@@ -48,7 +50,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     }
 
     app_render(state);  // Render the application state
-    app_update(state);  // Update the application state based on the current tick
     app_wait_for_frame(state);  // Wait for the next frame to render
 
     return SDL_APP_CONTINUE;  // Allow app to continue running
@@ -81,7 +82,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     state->window_height = 720;
     state->window_flags = 0;
     state->resolution_width = 640;
-    state->resolution_height = 480;
+    state->resolution_height = 360;
 
     if (init_window(state) != SDL_APP_CONTINUE ||
         init_renderer(state) != SDL_APP_CONTINUE ||
@@ -91,12 +92,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
         return SDL_APP_FAILURE;
     }
 
-    SDL_SetWindowTitle(state->window, "Boomer Shooter");  // Set window title
+    SDL_SetTextureScaleMode(state->framebuffer, SDL_SCALEMODE_NEAREST);  // Set the texture scale mode to nearest neighbor
+    SDL_SetWindowTitle(state->window, "Software Renderer");  // Set window title
     SDL_SetWindowPosition(state->window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);  // Center the window on the screen
     SDL_Log("Application initialized successfully.");
 
-    if(!game_init) {
-        SDL_Log("Game initialization function not found.");
+    if(!game_init(state) == SDL_APP_CONTINUE) {
+        SDL_Log("Failed to initialize game: %s", SDL_GetError());  // Check if game initialization was successful
         SDL_AppQuit(state, SDL_APP_FAILURE);  // Clean up and quit if game_init is not defined
         SDL_free(state);  // Free the allocated memory for the app state
         return SDL_APP_FAILURE;

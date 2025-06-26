@@ -2,12 +2,9 @@
 
 SDL_AppResult init_window(void *appstate) {
     AppState *state = (AppState*)appstate;
-    strcpy(state->title, "Boom");
     
-    
-
     state->window = SDL_CreateWindow(
-        state->title,
+        "Boom",
         state->window_width,
         state->window_height,
         state->window_flags
