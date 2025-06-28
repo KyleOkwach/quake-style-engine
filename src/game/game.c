@@ -9,12 +9,9 @@ SDL_AppResult game_init(void *appstate) {
         return SDL_APP_FAILURE;  // Return failure if appstate is NULL
     }
 
-    // Testing...
-    // ...
-
     // Initialize the camera
     Camera camera;
-    Vec3 camera_position = {0.5f, 0.5f, -3.0f}; // Position the camera slightly above the center
+    Vec3 camera_position = {0.0f, 0.0f, -3.0f}; // Position the camera slightly above the center
     Vec3 camera_direction = {0.0f, 0.0f, 1.0f}; // Point the camera towards the positive Z direction
     Vec3 camera_up = {0.0f, 1.0f, 0.0f}; // Define the up direction for the camera
     float near_plane = 0.1f; // Near clipping plane
@@ -35,24 +32,24 @@ SDL_AppResult game_init(void *appstate) {
     Mesh mesh;
     Tri* tris = SDL_malloc(sizeof(Tri) * 12); // 12 triangles for a cube
     SDL_memcpy(tris, (Tri[]){
-        // South
-        { .p = {{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}} },
-        { .p = {{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}} },
-        // East
-        { .p = {{1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}} },
-        { .p = {{1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f}} },
-        // North
-        { .p = {{1.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 1.0f}} },
-        { .p = {{1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}} },
-        // West
-        { .p = {{0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}} },
-        { .p = {{0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}} },
-        // Top
-        { .p = {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}} },
-        { .p = {{0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f}} },
-        // Bottom
-        {.p = {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}} },
-        {.p = {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}} },
+        // South face (z = -0.5, facing camera) - Counter-clockwise when viewed from outside
+        { .p = {{-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}} },
+        { .p = {{-0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}} },
+        // East face (x = 0.5) - Counter-clockwise when viewed from outside  
+        { .p = {{0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, 0.5f}, {0.5f, 0.5f, 0.5f}} },
+        { .p = {{0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, 0.5f}, {0.5f, 0.5f, -0.5f}} },
+        // North face (z = 0.5, away from camera) - Counter-clockwise when viewed from outside
+        { .p = {{0.5f, -0.5f, 0.5f}, {-0.5f, -0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f}} },
+        { .p = {{0.5f, -0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f}, {0.5f, 0.5f, 0.5f}} },
+        // West face (x = -0.5) - Counter-clockwise when viewed from outside
+        { .p = {{-0.5f, -0.5f, 0.5f}, {-0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}} },
+        { .p = {{-0.5f, -0.5f, 0.5f}, {-0.5f, 0.5f, -0.5f}, {-0.5f, 0.5f, 0.5f}} },
+        // Top face (y = 0.5) - Counter-clockwise when viewed from outside
+        { .p = {{-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, 0.5f}} },
+        { .p = {{-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f}} },
+        // Bottom face (y = -0.5) - Counter-clockwise when viewed from outside
+        { .p = {{-0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, -0.5f}} },
+        { .p = {{-0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, -0.5f, -0.5f}} }
     }, sizeof(Tri) * 12);
 
     mesh.tris = tris;

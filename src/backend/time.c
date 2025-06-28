@@ -1,10 +1,7 @@
 #include "time.h"
 #include "common.h"
 
-#define TARGET_FPS 60  // Target frames per second
-#define TARGET_FRAME_TIME (1000 / TARGET_FPS)  // Target frame time in milliseconds
-
-void app_wait_for_frame(void *appstate) {
+void wait_for_frame(void *appstate) {
     AppState *state = (AppState*)appstate;
 
     uint64_t frame_time = SDL_GetTicks() - state->current_tick;  // Calculate the time since the last frame

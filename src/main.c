@@ -50,7 +50,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     }
 
     app_render(state);  // Render the application state
-    app_wait_for_frame(state);  // Wait for the next frame to render
+    wait_for_frame(state);  // Wait for the next frame to render
 
     return SDL_APP_CONTINUE;  // Allow app to continue running
 }
@@ -81,8 +81,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     state->window_width = 1280;
     state->window_height = 960;
     state->window_flags = 0;
-    state->resolution_width = 640;
-    state->resolution_height = 480;
+    state->resolution_width = 320;
+    state->resolution_height = 240;
 
     if (init_window(state) != SDL_APP_CONTINUE ||
         init_renderer(state) != SDL_APP_CONTINUE ||
