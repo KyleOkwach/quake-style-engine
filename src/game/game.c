@@ -14,7 +14,7 @@ SDL_AppResult game_init(void *appstate) {
 
     // Initialize the camera
     Camera camera;
-    Vec3 camera_position = {0.5f, 0.5f, 3.0f}; // Position the camera slightly above the center
+    Vec3 camera_position = {0.5f, 0.5f, -3.0f}; // Position the camera slightly above the center
     Vec3 camera_direction = {0.0f, 0.0f, 1.0f}; // Point the camera towards the positive Z direction
     Vec3 camera_up = {0.0f, 1.0f, 0.0f}; // Define the up direction for the camera
     float near_plane = 0.1f; // Near clipping plane
@@ -29,29 +29,30 @@ SDL_AppResult game_init(void *appstate) {
         far_plane,
         fov,
         (float)state->resolution_width / (float)state->resolution_height, // Aspect ratio
-        state->resolution_width, state->resolution_height);
+        state->resolution_width, state->resolution_height
+    );
 
     Mesh mesh;
     Tri* tris = SDL_malloc(sizeof(Tri) * 12); // 12 triangles for a cube
     SDL_memcpy(tris, (Tri[]){
         // South
-        { .p = {{0, 0, 0}, {1, 0, 0}, {0, 1, 0}} },
-        { .p = {{1, 0, 0}, {1, 1, 0}, {0, 1, 0}} },
+        { .p = {{0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}} },
+        { .p = {{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}} },
         // East
-        { .p = {{1, 0, 0}, {1, 0, 1}, {1, 1, 0}} },
-        { .p = {{1, 0, 1}, {1, 1, 1}, {1, 1, 0}} },
+        { .p = {{1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}} },
+        { .p = {{1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f}} },
         // North
-        { .p = {{1, 0, 1}, {0, 0, 1}, {1, 1, 1}} },
-        { .p = {{0, 0, 1}, {0, 1, 1}, {1, 1, 1}} },
+        { .p = {{1.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 1.0f}} },
+        { .p = {{1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}} },
         // West
-        { .p = {{0, 0, 1}, {0, 0, 0}, {0, 1, 1}} },
-        { .p = {{0, 0, 0}, {0, 1, 0}, {0, 1, 1}} },
+        { .p = {{0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}} },
+        { .p = {{0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 0.0f}} },
         // Top
-        { .p = {{0, 1, 0}, {1, 1, 0}, {0, 1, 1}} },
-        { .p = {{1, 1, 0}, {1, 1, 1}, {0, 1, 1}} },
+        { .p = {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}} },
+        { .p = {{0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f}} },
         // Bottom
-        { .p = {{0, 0, 0}, {1, 0, 0}, {0, 0, 1}} },
-        { .p = {{1, 0, 0}, {1, 0, 1}, {0, 0, 1}} }
+        {.p = {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}} },
+        {.p = {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}} },
     }, sizeof(Tri) * 12);
 
     mesh.tris = tris;
@@ -60,8 +61,8 @@ SDL_AppResult game_init(void *appstate) {
 
     Entity player = create_entity();
     Entity cube = create_entity();
-    add_camera(player, &camera, COMPONENT_DEBUG); // Add the camera to the entity
-    add_mesh(cube, &mesh, COMPONENT_DEBUG);
+    add_camera(player, &camera, 0); // Add the camera to the entity
+    add_mesh(cube, &mesh, 0);
 
     return SDL_APP_CONTINUE;  // Indicate that the game initialization was successful
 }
@@ -91,7 +92,8 @@ void game_render(void) {
     for (Entity e = 0; e < MAX_ENTITIES; ++e) {
         Mesh* entity_mesh = get_mesh(e);
         if (entity_mesh) {
-            rot_mesh_render_wireframe(entity_mesh, main_camera, 0xFFFFFFFF, f_theta); // Render the mesh in wireframe mode
+            // mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, MESH_FLAG_WIREFRAME | MESH_FLAG_BACKFACE_CULL);
+            rot_mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, f_theta, MESH_FLAG_WIREFRAME | MESH_FLAG_BACKFACE_CULL);
         }
     }
 }

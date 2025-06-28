@@ -1,6 +1,33 @@
 #include "mesh.h"
 
-void mesh_render_wireframe(Mesh* mesh, Camera *camera, uint32_t color) {
+static int tri_backface_cull(const Tri* tri, const Camera* camera) {
+    Vec3 line1, line2, normal;
+    vec3_subtract(&line1, &tri->p[1], &tri->p[0]);
+    vec3_subtract(&line2, &tri->p[2], &tri->p[0]);
+    vec3_cross(&normal, &line1, &line2);
+    vec3_normalize(&normal);
+
+    // Calculate triangle center for more accurate culling
+    Vec3 triangle_center = {
+        (tri->p[0].x + tri->p[1].x + tri->p[2].x) / 3.0f,
+        (tri->p[0].y + tri->p[1].y + tri->p[2].y) / 3.0f,
+        (tri->p[0].z + tri->p[1].z + tri->p[2].z) / 3.0f
+    };
+
+    // Calculate view vector FROM triangle center TO camera
+    Vec3 view_vector;
+    vec3_subtract(&view_vector, &camera->position, &triangle_center);
+    vec3_normalize(&view_vector);
+
+    // Calculate dot product between surface normal and view vector
+    float dot_product;
+    vec3_dot(&dot_product, &normal, &view_vector);
+    
+    // If dot product is negative, triangle faces away from camera (backface)
+    return (dot_product < 0.0f);
+}
+
+void mesh_render(Mesh* mesh, Camera *camera, uint32_t color, int flags) {
     if (!mesh || !camera || !mesh->tris || mesh->size == 0) {
         SDL_Log("Error: Invalid mesh or camera");
         return;
@@ -13,6 +40,11 @@ void mesh_render_wireframe(Mesh* mesh, Camera *camera, uint32_t color) {
         tri_translated.p[0].z += camera->position.z; // Translate triangle to camera position
         tri_translated.p[1].z += camera->position.z;
         tri_translated.p[2].z += camera->position.z;
+
+        if (tri_backface_cull(&tri_translated, camera) && flags & MESH_FLAG_BACKFACE_CULL) {
+            // Backface culling: skip rendering this triangle if the normal is facing away from the camera
+            continue;
+        }
 
         for (int p = 0; p < 3; p++) {
             mat4_multiply_vec3(&tri_projected.p[p], &camera->projection_matrix, &tri_translated.p[p]);
@@ -39,43 +71,29 @@ void mesh_render_wireframe(Mesh* mesh, Camera *camera, uint32_t color) {
 }
 
 
-void rot_mesh_render_wireframe(Mesh* mesh, Camera *camera, uint32_t color, float f_theta) {
+void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, int flags) {
     if (!mesh || !camera || !mesh->tris || mesh->size == 0) {
         SDL_Log("Error: Invalid mesh or camera");
         return;
     }
 
-    Mat4 mat_rot_z = {0}, mat_rot_x = {0};
-
-    mat_rot_z.m[0][0] = cosf(f_theta);
-    mat_rot_z.m[0][1] = -sinf(f_theta);
-    mat_rot_z.m[1][0] = sinf(f_theta);
-    mat_rot_z.m[1][1] = cosf(f_theta);
-    mat_rot_z.m[2][2] = 1.0f;
-    mat_rot_z.m[3][3] = 1.0f;
-
-    mat_rot_x.m[0][0] = 1.0f;
-    mat_rot_x.m[1][1] = cosf(f_theta * 0.5f);
-    mat_rot_x.m[1][2] = -sinf(f_theta * 0.5f);
-    mat_rot_x.m[2][1] = sinf(f_theta * 0.5f);
-    mat_rot_x.m[2][2] = cosf(f_theta * 0.5f);
-    mat_rot_x.m[3][3] = 1.0f;
-
     for (int t = 0; t < mesh->size; t++) {
         Tri tri_projected, tri_translated, tri_rotated_z, tri_rotated_zx;
 
-        mat4_multiply_vec3(&tri_rotated_z.p[0], &mat_rot_z, &mesh->tris[t].p[0]);
-        mat4_multiply_vec3(&tri_rotated_z.p[1], &mat_rot_z, &mesh->tris[t].p[1]);
-        mat4_multiply_vec3(&tri_rotated_z.p[2], &mat_rot_z, &mesh->tris[t].p[2]);
-
-        mat4_multiply_vec3(&tri_rotated_zx.p[0], &mat_rot_x, &tri_rotated_z.p[0]);
-        mat4_multiply_vec3(&tri_rotated_zx.p[1], &mat_rot_x, &tri_rotated_z.p[1]);
-        mat4_multiply_vec3(&tri_rotated_zx.p[2], &mat_rot_x, &tri_rotated_z.p[2]);
+        for (int p = 0; p < 3; p++) {
+            rotate_z(&tri_rotated_z.p[p], mesh->tris[t].p[p], f_theta);
+            rotate_x(&tri_rotated_zx.p[p], tri_rotated_z.p[p], f_theta);
+        }
 
         tri_translated = tri_rotated_zx;
         tri_translated.p[0].z += camera->position.z; // Translate triangle to camera position
         tri_translated.p[1].z += camera->position.z;
         tri_translated.p[2].z += camera->position.z;
+
+        if (tri_backface_cull(&tri_translated, camera) && flags & MESH_FLAG_BACKFACE_CULL) {
+            // Backface culling: skip rendering this triangle if the normal is facing away from the camera
+            continue;
+        }
 
         for (int p = 0; p < 3; p++) {
             mat4_multiply_vec3(&tri_projected.p[p], &camera->projection_matrix, &tri_translated.p[p]);

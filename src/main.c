@@ -79,10 +79,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     }
 
     state->window_width = 1280;
-    state->window_height = 720;
+    state->window_height = 960;
     state->window_flags = 0;
     state->resolution_width = 640;
-    state->resolution_height = 360;
+    state->resolution_height = 480;
 
     if (init_window(state) != SDL_APP_CONTINUE ||
         init_renderer(state) != SDL_APP_CONTINUE ||

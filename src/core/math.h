@@ -37,11 +37,19 @@ typedef struct {
 } Mat2;
 
 // Mathematical operations
-// void mat4_identity(Mat4 *m);
-// void mat4_translate(Mat4 *m, float x, float y, float z);
-// void mat4_rotate(Mat4 *m, float angle, float x, float y, float z);
-// void mat4_scale(Mat4 *m, float x, float y, float z);
-// void mat4_transpose(Mat4 *m);
-// void mat4_inverse(Mat4 *m);
-// void mat4_multiply(Mat4 *result, const Mat4 *a, const Mat4 *b);
+void vec3_add(Vec3 *result, const Vec3 *a, const Vec3 *b);
+void vec3_subtract(Vec3 *result, const Vec3 *a, const Vec3 *b);
+void vec3_scale(Vec3 *result, const Vec3 *v, float scalar);
+void vec3_cross(Vec3 *result, const Vec3 *a, const Vec3 *b);
+void vec3_dot(float *result, const Vec3 *a, const Vec3 *b);
+float vec3_length(const Vec3 *v);
+void vec3_normalize(Vec3 *v);
+
+void mat4_identity(Mat4 *m);
+void mat4_translate(Mat4 *m, float x, float y, float z);
+void mat4_rotate(Mat4 *m, float angle, float x, float y, float z);
+void mat4_scale(Mat4 *m, float x, float y, float z);
+void mat4_transpose(Mat4 *m);
+void mat4_inverse(Mat4 *m);
+void mat4_multiply(Mat4 *result, const Mat4 *a, const Mat4 *b);
 void mat4_multiply_vec3(Vec3 *result, const Mat4 *m, const Vec3 *v);
