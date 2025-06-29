@@ -9,6 +9,12 @@ SDL_AppResult game_init(void *appstate) {
         return SDL_APP_FAILURE;  // Return failure if appstate is NULL
     }
 
+    Entity player = create_entity();
+    Transform3d player_transform;
+    player_transform.position.x = 0.0f;
+    player_transform.position.x = 0.0f;
+    player_transform.position.x = -3.0f;
+
     // Initialize the camera
     Camera camera;
     Vec3 camera_position = {0.0f, 0.0f, -3.0f}; // Position the camera slightly above the center
@@ -56,9 +62,10 @@ SDL_AppResult game_init(void *appstate) {
     mesh.size = 12;
     mesh.capacity = 12;
 
-    Entity player = create_entity();
-    Entity cube = create_entity();
+    add_transform3d(player, &player_transform, 0);
     add_camera(player, &camera, 0); // Add the camera to the entity
+
+    Entity cube = create_entity();
     add_mesh(cube, &mesh, 0);
 
     return SDL_APP_CONTINUE;  // Indicate that the game initialization was successful
@@ -90,7 +97,7 @@ void game_render(void) {
         Mesh* entity_mesh = get_mesh(e);
         if (entity_mesh) {
             // mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, MESH_FLAG_WIREFRAME | MESH_FLAG_BACKFACE_CULL);
-            rot_mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, f_theta, MESH_FLAG_WIREFRAME | MESH_FLAG_BACKFACE_CULL);
+            rot_mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, f_theta, MESH_FLAG_SOLID | MESH_FLAG_BACKFACE_CULL);
         }
     }
 }

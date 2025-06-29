@@ -6,7 +6,6 @@
 #include "backend/time.h"
 #include "backend/init.h"
 #include "backend/framebuffer.h"
-#include "core/systems/rasterize.h"
 #include "game/game.h"
 
 void app_render(void *appstate) {
@@ -81,8 +80,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     state->window_width = 1280;
     state->window_height = 960;
     state->window_flags = 0;
-    state->resolution_width = 320;
-    state->resolution_height = 240;
+    state->resolution_width = 640;
+    state->resolution_height = 480;
 
     if (init_window(state) != SDL_APP_CONTINUE ||
         init_renderer(state) != SDL_APP_CONTINUE ||

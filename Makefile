@@ -11,6 +11,7 @@ build: out
 		./src/backend/*.c \
 		./src/backend/sdl/*.c \
 		./src/core/*.c \
+		./src/core/utils/*.c \
 		./src/core/systems/*.c \
 		./src/game/*.c \
 		-lSDL3 \

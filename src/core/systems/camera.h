@@ -1,7 +1,7 @@
 #pragma once
 
 #include <math.h>
-#include "../math.h"
+#include "../utils/math.h"
 #include "../ecs.h"
 
 void camera_init(

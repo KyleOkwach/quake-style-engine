@@ -32,6 +32,15 @@ static void draw_hline(int x0, int x1, int y, uint32_t color) {
     }
 }
 
+static void draw_vline(int x, int y0, int y1, uint32_t color) {
+    if (y0 > y1) {
+        swap_points(&y0, &y1);
+    }
+    for (int y = y0; y <= y1; y++) {
+        framebuffer_putpixel(x, y, color);
+    }
+}
+
 // Bresenham's line algorithm
 void draw_line(int x0, int y0, int x1, int y1, uint32_t color) {
     int dx = abs(x1 - x0);
@@ -59,9 +68,13 @@ void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t colo
 
 // Draw filled triangle using scanline algorithm
 void draw_triangle_filled(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color) {
+    // Sort vertices by y-coordinate - this is important for scanline fill
+    // First point is the topmost, second is middle, third is bottommost
     sort_by_y(&x0, &y0, &x1, &y1, &x2, &y2);
 
+    // Edge cases
     if (y0 == y2) {
+        // Degenerate case: all points are on the same horizontal line
         draw_hline(x0, x1, y0, color);
         draw_hline(x1, x2, y0, color);
         return;
@@ -78,19 +91,30 @@ void draw_triangle_filled(int x0, int y0, int x1, int y1, int x2, int y2, uint32
         int ax = x0 + (int)((x2 - x0) * alpha);
         int bx = x0 + (int)((x1 - x0) * beta);
 
-        draw_hline(ax, bx, y, color);
+        // Add +1 pixel to the right edge to ensure coverage
+        if (ax > bx) {
+            draw_hline(bx, ax + 1, y, color);
+        } else {
+            draw_hline(ax, bx + 1, y, color);
+        }
     }
 
+
     // Bottom half
-    for (int y = y1 + 1; y <= y2; y++) {
-        int segment_height = y2 - y1;
+    for (int y = y1; y <= y2; y++) {
+        int segment_height = y2 - y1 + 1;
         float alpha = (float)(y - y0) / total_height;
         float beta = segment_height ? (float)(y - y1) / segment_height : 0;
 
         int ax = x0 + (int)((x2 - x0) * alpha);
         int bx = x1 + (int)((x2 - x1) * beta);
 
-        draw_hline(ax, bx, y, color);
+        // Add +1 pixel to the right edge to ensure coverage
+        if (ax > bx) {
+            draw_hline(bx, ax + 1, y, color);
+        } else {
+            draw_hline(ax, bx + 1, y, color);
+        }
     }
 }
 
