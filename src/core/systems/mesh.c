@@ -46,7 +46,7 @@ static int tri_backface_cull(const Tri* tri, const Camera* camera) {
     // return (angle < BACKFACE_CULL_ANGLE_THRESHOLD);
 }
 
-void mesh_render(Mesh* mesh, Camera *camera, uint32_t color, int flags) {
+void render_model(Mesh* mesh, Camera *camera, uint32_t color, int flags) {
     if (!mesh || !camera || !mesh->tris || mesh->size == 0) {
         SDL_Log("Error: Invalid mesh or camera");
         return;
@@ -101,7 +101,6 @@ void mesh_render(Mesh* mesh, Camera *camera, uint32_t color, int flags) {
         }
     }
 }
-
 
 void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, int flags) {
     if (!mesh || !camera || !mesh->tris || mesh->size == 0) {

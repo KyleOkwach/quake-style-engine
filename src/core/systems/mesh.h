@@ -17,7 +17,7 @@
 #define BACKFACE_CULL_ANGLE_THRESHOLD (M_PI/2.0f + 0.09f)
 #define BACKFACE_CULL_DOT_THRESHOLD -0.1f
 
-void mesh_render(Mesh *mesh, Camera *camera, uint32_t color, int flags);
+void render_model(Mesh *mesh, Camera *camera, uint32_t color, int flags);
 
 // Debug functions
 void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, int flags);

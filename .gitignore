@@ -1,6 +1,7 @@
 STRUCTURE.MD
 
 .vscode/
+assets/
 out/
 
 *.log
