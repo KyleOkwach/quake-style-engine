@@ -16,8 +16,10 @@
 static void swap_points(int* a, int* b);
 static void sort_by_y(int* x0, int* y0, int* x1, int* y1, int* x2, int* y2);
 static void draw_hline(int x0, int x1, int y, uint32_t color);
+static SDL_Color hex_to_rgba(uint32_t hex);
 
-void draw_line(int x0, int y0, int x1, int y1, uint32_t color);
+void draw_polygon(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color, float light_intensity);
+void draw_line(int x0, int y0, int x1, int y1, uint32_t color, int thickness);
 void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color);
 void draw_triangle_filled(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color);
 void draw_rectangle(int x0, int y0, int x1, int y1, uint32_t color);

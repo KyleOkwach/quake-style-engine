@@ -97,7 +97,7 @@ void game_render(void) {
         Mesh* entity_mesh = get_mesh(e);
         if (entity_mesh) {
             // mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, MESH_FLAG_WIREFRAME | MESH_FLAG_BACKFACE_CULL);
-            rot_mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, f_theta, MESH_FLAG_SOLID | MESH_FLAG_BACKFACE_CULL);
+            rot_mesh_render(entity_mesh, main_camera, 0xFF0000FF, f_theta, MESH_FLAG_SOLID | MESH_FLAG_BACKFACE_CULL);
         }
     }
 }

@@ -80,12 +80,25 @@ void mesh_render(Mesh* mesh, Camera *camera, uint32_t color, int flags) {
             tri_projected.p[p].y *= 0.5f * camera->height;
         }
 
-        draw_triangle(
-            (int)tri_projected.p[0].x, (int)tri_projected.p[0].y,
-            (int)tri_projected.p[1].x, (int)tri_projected.p[1].y,
-            (int)tri_projected.p[2].x, (int)tri_projected.p[2].y,
-            color
-        );
+        // Rasterize the tris
+        if (flags & MESH_FLAG_SOLID) {
+            draw_polygon(
+                (int)tri_projected.p[0].x, (int)tri_projected.p[0].y,
+                (int)tri_projected.p[1].x, (int)tri_projected.p[1].y,
+                (int)tri_projected.p[2].x, (int)tri_projected.p[2].y,
+                color,
+                1
+            );
+        }
+
+        if (flags & MESH_FLAG_WIREFRAME) {
+            draw_triangle(
+                (int)tri_projected.p[0].x, (int)tri_projected.p[0].y,
+                (int)tri_projected.p[1].x, (int)tri_projected.p[1].y,
+                (int)tri_projected.p[2].x, (int)tri_projected.p[2].y,
+                0x000000FF
+            );
+        }
     }
 }
 
@@ -118,6 +131,16 @@ void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, 
             }
         }
 
+        // Sample lighting
+        Vec3 light_direction = {0.0f, 0.0f, 3.0f};
+        vec3_normalize(&light_direction);
+
+        Vec3 normal;
+        calculate_triangle_normal(&normal, &tri_translated);
+
+        float dp;
+        vec3_dot(&dp, &normal, &light_direction);
+
         for (int p = 0; p < 3; p++) {
             mat4_multiply_vec3(&tri_projected.p[p], &camera->projection_matrix, &tri_translated.p[p]);
 
@@ -131,11 +154,12 @@ void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, 
 
         // Rasterize the tris
         if (flags & MESH_FLAG_SOLID) {
-            draw_triangle_filled(
+            draw_polygon(
                 (int)tri_projected.p[0].x, (int)tri_projected.p[0].y,
                 (int)tri_projected.p[1].x, (int)tri_projected.p[1].y,
                 (int)tri_projected.p[2].x, (int)tri_projected.p[2].y,
-                color
+                color,
+                dp
             );
         }
 
@@ -144,7 +168,7 @@ void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, 
                 (int)tri_projected.p[0].x, (int)tri_projected.p[0].y,
                 (int)tri_projected.p[1].x, (int)tri_projected.p[1].y,
                 (int)tri_projected.p[2].x, (int)tri_projected.p[2].y,
-                0xFF0000FF
+                0x000000FF
             );
         }
     }
