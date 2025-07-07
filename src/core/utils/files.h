@@ -3,5 +3,9 @@
 */
 #pragma once
 
-#include <fstream>
-#include <strstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../ecs.h"
+
+bool model_from_obj(char *filename, Mesh *mesh);

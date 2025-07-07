@@ -46,6 +46,14 @@ static int tri_backface_cull(const Tri* tri, const Camera* camera) {
     // return (angle < BACKFACE_CULL_ANGLE_THRESHOLD);
 }
 
+void add_triangle(Tri **tris, int *count, Tri *new_tri) {
+    *tris = SDL_realloc(*tris, sizeof(Tri) * (*count + 1));
+    if (*tris) {
+        (*tris)[*count] = *new_tri;  // Add new tri
+        (*count)++;  // Increase tri count
+    }
+}
+
 void render_model(Mesh* mesh, Camera *camera, uint32_t color, int flags) {
     if (!mesh || !camera || !mesh->tris || mesh->size == 0) {
         SDL_Log("Error: Invalid mesh or camera");
@@ -119,9 +127,9 @@ void rot_mesh_render(Mesh* mesh, Camera *camera, uint32_t color, float f_theta, 
 
         tri_translated = tri_rotated_zx;
         // Move the cube away from the camera (into the scene)
-        tri_translated.p[0].z += 3.0f; 
-        tri_translated.p[1].z += 3.0f;
-        tri_translated.p[2].z += 3.0f;
+        tri_translated.p[0].z += 1.0f; 
+        tri_translated.p[1].z += 1.0f;
+        tri_translated.p[2].z += 1.0f;
 
         // Do backface culling after all transformations but before projection
         if (flags & MESH_FLAG_BACKFACE_CULL) {

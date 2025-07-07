@@ -1,4 +1,4 @@
-# SOFTWARE RENDERED GAME ENGINE
+# SOFTWARE RENDERED GAME ENGINE(WIP)
 A software renderer made using C and SDL3. Inspired by the original quake engine which relied on software rendering.<br/>
 This engine works by writing unsigned int 32 color values to a framebuffer which is then presented to the screen as a texture.
 

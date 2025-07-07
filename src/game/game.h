@@ -3,6 +3,7 @@
 #include "../core/ecs.h"
 #include "../core/systems/camera.h"
 #include "../core/systems/mesh.h"
+#include "../core/utils/files.h"
 
 SDL_AppResult game_init(void *appState);
 void game_update(void *appstate);

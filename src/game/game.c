@@ -36,37 +36,13 @@ SDL_AppResult game_init(void *appstate) {
     );
 
     Mesh mesh;
-    Tri* tris = SDL_malloc(sizeof(Tri) * 12); // 12 triangles for a cube
-    SDL_memcpy(tris, (Tri[]){
-        // South face (z = -0.5, facing camera) - Counter-clockwise when viewed from outside
-        { .p = {{-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}} },
-        { .p = {{-0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}} },
-        // East face (x = 0.5) - Counter-clockwise when viewed from outside  
-        { .p = {{0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, 0.5f}, {0.5f, 0.5f, 0.5f}} },
-        { .p = {{0.5f, -0.5f, -0.5f}, {0.5f, 0.5f, 0.5f}, {0.5f, 0.5f, -0.5f}} },
-        // North face (z = 0.5, away from camera) - Counter-clockwise when viewed from outside
-        { .p = {{0.5f, -0.5f, 0.5f}, {-0.5f, -0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f}} },
-        { .p = {{0.5f, -0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f}, {0.5f, 0.5f, 0.5f}} },
-        // West face (x = -0.5) - Counter-clockwise when viewed from outside
-        { .p = {{-0.5f, -0.5f, 0.5f}, {-0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f}} },
-        { .p = {{-0.5f, -0.5f, 0.5f}, {-0.5f, 0.5f, -0.5f}, {-0.5f, 0.5f, 0.5f}} },
-        // Top face (y = 0.5) - Counter-clockwise when viewed from outside
-        { .p = {{-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, 0.5f}} },
-        { .p = {{-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, 0.5f}, {-0.5f, 0.5f, 0.5f}} },
-        // Bottom face (y = -0.5) - Counter-clockwise when viewed from outside
-        { .p = {{-0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, -0.5f}} },
-        { .p = {{-0.5f, -0.5f, 0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, -0.5f, -0.5f}} }
-    }, sizeof(Tri) * 12);
-
-    mesh.tris = tris;
-    mesh.size = 12;
-    mesh.capacity = 12;
+    model_from_obj("./assets/models/ranger.obj", &mesh);
 
     add_transform3d(player, &player_transform, 0);
     add_camera(player, &camera, 0); // Add the camera to the entity
 
-    Entity cube = create_entity();
-    add_mesh(cube, &mesh, 0);
+    Entity test_model = create_entity();
+    add_mesh(test_model, &mesh, 0);
 
     return SDL_APP_CONTINUE;  // Indicate that the game initialization was successful
 }
@@ -97,7 +73,7 @@ void game_render(void) {
         Mesh* entity_mesh = get_mesh(e);
         if (entity_mesh) {
             // mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, MESH_FLAG_WIREFRAME | MESH_FLAG_BACKFACE_CULL);
-            rot_mesh_render(entity_mesh, main_camera, 0xFF0000FF, f_theta, MESH_FLAG_SOLID | MESH_FLAG_BACKFACE_CULL);
+            rot_mesh_render(entity_mesh, main_camera, 0xFFFFFFFF, f_theta, MESH_FLAG_WIREFRAME | MESH_FLAG_SOLID | MESH_FLAG_BACKFACE_CULL);
         }
     }
 }

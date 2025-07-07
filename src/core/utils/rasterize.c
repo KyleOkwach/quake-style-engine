@@ -85,11 +85,12 @@ static uint32_t rgba_to_hex(SDL_Color rgba_color) {
 void draw_polygon(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t color, float light_intensity) {
     // Draw polygon with varying intensity for shading
     SDL_Color rgba_color = hex_to_rgba(color);  // Convert to rgba
+    float min_intensity = 0.5;
 
     // Darken the color to the specified intensity
-    rgba_color.r *= light_intensity;
-    rgba_color.b *= light_intensity;
-    rgba_color.a *= light_intensity;
+    rgba_color.r *= fmax(light_intensity, min_intensity);
+    rgba_color.b *= fmax(light_intensity, min_intensity);
+    rgba_color.a *= fmax(light_intensity, min_intensity);
 
     draw_triangle_filled(x0, y0, x1, y1, x2, y2, rgba_to_hex(rgba_color));
 }
