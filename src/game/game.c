@@ -36,7 +36,10 @@ SDL_AppResult game_init(void *appstate) {
     );
 
     Mesh mesh;
-    model_from_obj("./assets/models/ranger.obj", &mesh);
+    if (model_from_obj("./assets/models/ranger.obj", &mesh) != 0) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load model from ranger.obj");
+        return SDL_APP_FAILURE;
+    }
 
     add_transform3d(player, &player_transform, 0);
     add_camera(player, &camera, 0); // Add the camera to the entity
